@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MatSmart AI</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 500px;
+      background: #111827;
+      padding: 20px;
+      border-radius: 16px;
+    }
+
+    h1 { text-align: center; }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: none;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #22c55e;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 20px;
+      background: #1f2937;
+      padding: 10px;
+      border-radius: 10px;
+      min-height: 60px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>MatSmart AI 🍽️</h1>
+
+    <input id="budget" placeholder="Budsjett (f.eks 100 kr)" />
+    <input id="idea" placeholder="Hva vil du spise?" />
+
+    <button onclick="getMeal()">Få middag</button>
+
+    <div class="result" id="result">Resultat vises her...</div>
+  </div>
+
+  <script>
+    async function getMeal() {
+      const budget = document.getElementById("budget").value;
+      const idea = document.getElementById("idea").value;
+      const resultBox = document.getElementById("result");
+
+      resultBox.innerHTML = "⏳ Tenker...";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ budget, idea })
+        });
+
+        const data = await res.json();
+
+        resultBox.innerHTML = data.result || "Ingen svar fra AI";
+      } catch (err) {
+        resultBox.innerHTML = "Feil: kunne ikke koble til AI";
+      }
+    }
+  </script>
+</body>
+</html>
